@@ -24,7 +24,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref || github.ref_name  }}
-          token: ${{ secrets.PAT_FOR_ACTIONS }}
+          # Upstream uses a personal access token so the bot's commit can
+          # re-trigger workflows. Fall back to the built-in token, which forks
+          # always have (its commits intentionally do not re-trigger workflows,
+          # which also avoids a formatting loop).
+          token: ${{ secrets.PAT_FOR_ACTIONS || secrets.GITHUB_TOKEN }}
 
       - name: Run clang-format via Docker
         run: |
