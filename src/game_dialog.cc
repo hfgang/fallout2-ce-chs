@@ -48,8 +48,8 @@
 #include "text_object.h"
 #include "tile.h"
 #include "touch.h"
-#include "word_wrap.h"
 #include "window_manager.h"
+#include "word_wrap.h"
 
 namespace fallout {
 

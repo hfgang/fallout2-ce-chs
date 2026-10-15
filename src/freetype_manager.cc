@@ -1,9 +1,9 @@
 #include "freetype_manager.h"
 
-#include <stdio.h>
 #include <ctype.h>
-#include <string.h>
 #include <iconv.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <map>
 #include <string>
