@@ -26,6 +26,8 @@
 
 #include "scan_unimplemented.h"
 
+#include "debug.h"
+
 #if __APPLE__ && TARGET_OS_IOS
 #include "platform/ios/paths.h"
 #endif
@@ -69,10 +71,15 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
+    // CE: Buffered until debugModeInit() picks up the configured debug mode, so
+    // this also shows up when the game dies before that point.
+    debugPrint("Startup: main enter\n");
+
 #if __APPLE__ && TARGET_OS_IOS
     SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
     SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
     chdir(iOSGetDocumentsPath());
+    debugPrint("Startup: cwd changed to iOS documents path\n");
 #endif
 
 #if __APPLE__ && TARGET_OS_OSX
@@ -102,8 +109,10 @@ int main(int argc, char* argv[])
 #endif
 
     if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
+        debugPrint("Startup: FAILED SDL_Init: %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
+    debugPrint("Startup: SDL_Init ok\n");
 
     atexit([] {
         audioEngineExit();

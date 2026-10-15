@@ -140,7 +140,12 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int fl
 {
     char path[COMPAT_MAX_PATH];
 
+    // CE: Startup tracing. These are buffered until debugModeInit() registers
+    // the log file, so they are also visible when the game dies early.
+    debugPrint("Startup: gameInitWithOptions enter\n");
+
     if (gameMemoryInit() == -1) {
+        debugPrint("Startup: FAILED gameMemoryInit\n");
         return -1;
     }
 
@@ -155,9 +160,30 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int fl
 
     debugModeInit(settings.debug.mode.c_str());
 
+    debugPrint("Startup: language=%s\n", settings.system.language.c_str());
+
     gIsMapper = isMapper;
 
+    // CE: Report which files the engine expects to find in the current
+    // directory, since it exits immediately when the required data files are
+    // missing. This is the fastest way to diagnose an install that starts and
+    // quits right away.
+    static const char* kStartupFiles[] = {
+        "master.dat",
+        "critter.dat",
+        "ce.dat",
+        "fallout2.cfg",
+        "fonts/chs/font.ini",
+        "fonts/chs/NotoSansSC.ttf",
+    };
+
+    for (size_t startupFileIndex = 0; startupFileIndex < sizeof(kStartupFiles) / sizeof(*kStartupFiles); startupFileIndex++) {
+        const char* startupFileName = kStartupFiles[startupFileIndex];
+        debugPrint("Startup: %s: %s\n", startupFileName, compat_access(startupFileName, 0) == 0 ? "found" : "MISSING");
+    }
+
     if (gameDbInit() == -1) {
+        debugPrint("Startup: FAILED gameDbInit\n");
         settingsExit(false);
         sfallConfigExit();
         return -1;
@@ -186,8 +212,10 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int fl
     }
 
     programWindowSetTitle(visibleWindowTitle);
+    debugPrint("Startup: windowInit\n");
     windowInit(1, flags);
     paletteInit();
+    debugPrint("Startup: windowInit ok\n");
 
     // SFALL: Execute all code that should be executed ON game init
     sfallOnGameInit();
@@ -222,6 +250,7 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int fl
     // (e.g. GBK) which makes it possible to render Chinese text. When they are
     // not available (no "fonts/<language>/font.ini" in the game directory) fall
     // back to the original interface fonts.
+    debugPrint("Startup: font init\n");
     if (FtFontsInit() == 0) {
         fontManagerAdd(&gFtFontManager);
     } else {
@@ -229,6 +258,7 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int fl
         fontManagerAdd(&gModernFontManager);
     }
     fontSetCurrent(font);
+    debugPrint("Startup: font init ok\n");
 
     screenshotHandlerConfigure(KEY_F12, gameTakeScreenshot);
 
