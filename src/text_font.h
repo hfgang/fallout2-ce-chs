@@ -18,6 +18,11 @@ typedef int FontManagerGetLetterSpacingProc();
 typedef int FontManagerGetBufferSizeProc(const char* string);
 typedef int FontManagerGetMonospacedCharacterWidth();
 
+// Word wrapping implementation provided by the font manager. This allows
+// font managers to override the default (English-oriented) wrapping, for
+// example to support CJK text which has no spaces between words.
+typedef int FontManageWordWrapProc(const char* string, int width, short* breakpoints, short* breakpointsLengthPtr);
+
 typedef struct FontManager {
     int minFont;
     int maxFont;
@@ -30,6 +35,7 @@ typedef struct FontManager {
     FontManagerGetLetterSpacingProc* getLetterSpacingProc;
     FontManagerGetBufferSizeProc* getBufferSizeProc;
     FontManagerGetMonospacedCharacterWidth* getMonospacedCharacterWidthProc;
+    FontManageWordWrapProc* wordWrap;
 } FontManager;
 
 extern FontManager gTextFontManager;
@@ -43,6 +49,11 @@ extern FontManagerGetMonospacedStringWidthProc* fontGetMonospacedStringWidth;
 extern FontManagerGetLetterSpacingProc* fontGetLetterSpacing;
 extern FontManagerGetBufferSizeProc* fontGetBufferSize;
 extern FontManagerGetMonospacedCharacterWidth* fontGetMonospacedCharacterWidth;
+
+// Word wrap implementation of the current font manager. Always use this
+// pointer instead of calling fallout::leagcyWordWrap directly so that font
+// managers with custom wrapping (e.g. CJK-aware) are honored.
+extern FontManageWordWrapProc* wordWrap;
 
 inline void fontDrawText(unsigned char* buffer, const char* string, int length, int pitch, ColorWithFlags color)
 {

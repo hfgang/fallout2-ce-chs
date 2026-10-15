@@ -781,7 +781,7 @@ static int pipboyWindowInit(int intent)
                 const HolidayDescription* holidayDescription = &(gHolidayDescriptions[holiday]);
                 const char* holidayName = getmsg(&gPipboyMessageList, &gPipboyMessageListItem, holidayDescription->textId);
                 char holidayNameCopy[256];
-                strcpy(holidayNameCopy, holidayName);
+                snprintf(holidayNameCopy, sizeof(holidayNameCopy), "%s", holidayName);
 
                 int len = fontGetStringWidth(holidayNameCopy);
                 fontDrawText(gPipboyWindowBuffer + PIPBOY_WINDOW_WIDTH * (_pipboyFrmImages[PIPBOY_FRM_LOGO].getHeight() + 174) + 6 + _pipboyFrmImages[PIPBOY_FRM_LOGO].getWidth() / 2 + 323 - len / 2,
@@ -826,7 +826,7 @@ static int pipboyWindowInit(int intent)
             const HolidayDescription* holidayDescription = &(gHolidayDescriptions[holiday]);
             const char* holidayName = getmsg(&gPipboyMessageList, &gPipboyMessageListItem, holidayDescription->textId);
             char holidayNameCopy[256];
-            strcpy(holidayNameCopy, holidayName);
+            snprintf(holidayNameCopy, sizeof(holidayNameCopy), "%s", holidayName);
 
             int length = fontGetStringWidth(holidayNameCopy);
             fontDrawText(gPipboyWindowBuffer + PIPBOY_WINDOW_WIDTH * (_pipboyFrmImages[PIPBOY_FRM_LOGO].getHeight() + 174) + 6 + _pipboyFrmImages[PIPBOY_FRM_LOGO].getWidth() / 2 + 323 - length / 2,
@@ -1448,8 +1448,10 @@ static void pipboyWindowRenderQuestLocationList(int selectedQuestLocation)
 
         const char* questLocation = getmsg(&gMapMessageList, &gPipboyMessageListItem, quest->location);
         if (questLocation != NULL) {
-            gPipboyQuestLocations[gPipboyQuestLocationsCount] = questLocation; // No more type mismatch
-            gPipboyQuestLocationsCount += 1;
+            if (gPipboyQuestLocationsCount < 100) {
+                gPipboyQuestLocations[gPipboyQuestLocationsCount] = questLocation; // No more type mismatch
+                gPipboyQuestLocationsCount += 1;
+            }
         }
 
         // Skip quests in the same location

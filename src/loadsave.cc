@@ -205,6 +205,12 @@ static constexpr InterfaceFrmId kLoadSaveFrmIds[LOAD_SAVE_FRM_COUNT] = {
 constexpr int saveLoadPages = 100;
 constexpr int slotsPerPage = 10;
 constexpr int saveLoadTotalSlots = saveLoadPages * slotsPerPage;
+
+// Fixed slot list metrics matching the original layout. The FreeType font line
+// height (based on the TTF metrics) is taller and would break the slot list
+// layout and click handling.
+constexpr int kLoadSaveSlotLineHeight = 10;
+constexpr int kLoadSaveSlotRowHeight = 3 * kLoadSaveSlotLineHeight + 4;
 constexpr int kLoadSaveActionDone = 500;
 constexpr int kLoadSaveFastPageStep = 10;
 
@@ -406,7 +412,7 @@ static int loadSaveNavigationY()
 {
     int startIndex = _currentSlotPage * slotsPerPage;
     int visibleSlotCount = std::min(slotsPerPage, saveLoadTotalSlots - startIndex);
-    return 87 + visibleSlotCount * (3 * fontGetLineHeight() + 4);
+    return 87 + visibleSlotCount * kLoadSaveSlotRowHeight;
 }
 
 static int loadSavePageDeltaForInput(int keyCode, int mouseX, int mouseY)
@@ -420,7 +426,7 @@ static int loadSavePageDeltaForInput(int keyCode, int mouseX, int mouseY)
     }
 
     int navigationY = loadSaveNavigationY();
-    if (mouseY < navigationY || mouseY >= navigationY + fontGetLineHeight()) {
+    if (mouseY < navigationY || mouseY >= navigationY + kLoadSaveSlotLineHeight) {
         return 0;
     }
 
@@ -748,7 +754,7 @@ int lsgSaveGame(int mode)
                 }
 
                 // Calculate the clicked slot, adjusting for pagination
-                int relativeSlot = (mouseY - 79) / (3 * fontGetLineHeight() + 4);
+                int relativeSlot = (mouseY - 79) / kLoadSaveSlotRowHeight;
                 if (relativeSlot < 0) {
                     relativeSlot = 0;
                 } else if (relativeSlot > 9) {
@@ -1374,7 +1380,7 @@ int lsgLoadGame(int mode)
                 }
 
                 // Calculate the clicked slot, adjusting for pagination
-                int relativeSlot = (mouseY - 79) / (3 * fontGetLineHeight() + 4);
+                int relativeSlot = (mouseY - 79) / kLoadSaveSlotRowHeight;
                 if (relativeSlot < 0) {
                     relativeSlot = 0;
                 } else if (relativeSlot > 9) {
@@ -2413,7 +2419,7 @@ static void _ShowSlotList(int windowType)
         snprintf(_str, sizeof(_str), "[   %s %.2d:   ]", text, index + 1);
         fontDrawText(gLoadSaveWindowBuffer + LS_WINDOW_WIDTH * y + 55, _str, LS_WINDOW_WIDTH, LS_WINDOW_WIDTH, color);
 
-        y += fontGetLineHeight();
+        y += kLoadSaveSlotLineHeight;
         switch (_LSstatus[index]) {
         case SLOT_STATE_OCCUPIED:
             strcpy(_str, _LSData[index].description);
@@ -2438,7 +2444,7 @@ static void _ShowSlotList(int windowType)
         }
 
         fontDrawText(gLoadSaveWindowBuffer + LS_WINDOW_WIDTH * y + 55, _str, LS_WINDOW_WIDTH, LS_WINDOW_WIDTH, color);
-        y += 2 * fontGetLineHeight() + 4;
+        y += 2 * kLoadSaveSlotLineHeight + 4;
     }
 
     // Pagination navigation

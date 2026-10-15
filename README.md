@@ -100,6 +100,31 @@ In time this stuff will receive an in-game interface, right now you have to do i
 
 Note: There are a few settings that are still configured in `ddraw.ini`.  They will be migrated to cfg over time.
 
+## Chinese language support
+
+This fork adds support for Chinese (and other multi-byte encoded) game text on
+top of upstream. Interface text is rendered with TrueType fonts through a
+vendored FreeType + GNU libiconv, so GBK-encoded messages (from a Chinese
+translation patch) display correctly, including CJK-aware line wrapping in
+dialog and inventory screens. Everything is optional at runtime:
+
+1. Copy the `fonts` directory from this repository into your game directory
+   (next to `master.dat`). It ships a Chinese configuration
+   (`fonts/chs/font.ini`) with **Noto Sans SC** bundled (SIL OFL 1.1, see
+   `fonts/chs/NotoSansSC-LICENSE.txt`), covering both Latin and CJK glyphs.
+2. Set `language=chs` in `fallout2.cfg` (the value used by the Chinese Fallout
+   2 community; `chinese`/`zh` work too, and `english` also picks up the
+   bundled Chinese configuration because translated messages usually live
+   inside `master.dat`).
+3. Run the game. Without the `fonts` directory the engine behaves exactly like
+   upstream and uses the original bitmap fonts.
+
+Other languages are unaffected: the bundled configuration is only used for
+English or Chinese language values, and any language can provide its own
+`fonts/<language>/font.ini` (e.g. with `encoding=BIG5`). See
+[fonts/README.md](fonts/README.md) for the configuration keys, how to swap in
+your own font, and the full directory resolution order.
+
 ## Platform-specific installation
 
 ### Windows

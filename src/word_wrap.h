@@ -5,7 +5,12 @@ namespace fallout {
 
 #define WORD_WRAP_MAX_COUNT (64)
 
-int wordWrap(const char* string, int width, short* breakpoints, short* breakpointsLengthPtr);
+// Legacy (single-byte, English-oriented) word wrap implementation.
+//
+// Callers should prefer the [wordWrap] function pointer declared in
+// text_font.h, which resolves to the current font manager's implementation
+// (e.g. CJK-aware wrapping for FreeType fonts).
+int leagcyWordWrap(const char* string, int width, short* breakpoints, short* breakpointsLengthPtr);
 
 } // namespace fallout
 

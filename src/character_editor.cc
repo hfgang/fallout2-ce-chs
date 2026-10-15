@@ -2392,7 +2392,7 @@ static void characterEditorDrawPcStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 32, stringBuffer, 640, 640, color);
 
     // EXPERIENCE
-    y += fontGetLineHeight() + 1;
+    y += 10 + 1;
     if (characterEditorSelectedItem != EDITOR_EXPERIENCE) {
         color = COLOR_GREEN;
     } else {
@@ -2406,7 +2406,7 @@ static void characterEditorDrawPcStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 32, stringBuffer, 640, 640, color);
 
     // EXP NEEDED TO NEXT LEVEL
-    y += fontGetLineHeight() + 1;
+    y += 10 + 1;
     if (characterEditorSelectedItem != EDITOR_NEXT_LEVEL) {
         color = COLOR_GREEN;
     } else {
@@ -2658,7 +2658,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 263, t, 640, 640, color);
 
     // Poisoned
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_POISONED) {
         color = critterGetPoison(gDude) != 0 ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2671,7 +2671,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 194, t, 640, 640, color);
 
     // Radiated
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_RADIATED) {
         color = critterGetRadiation(gDude) != 0 ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2684,7 +2684,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 194, t, 640, 640, color);
 
     // Eye Damage
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_EYE_DAMAGE) {
         color = (conditions & DAM_BLIND) ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2697,7 +2697,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 194, t, 640, 640, color);
 
     // Crippled Right Arm
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_CRIPPLED_RIGHT_ARM) {
         color = (conditions & DAM_CRIP_ARM_RIGHT) ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2710,7 +2710,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 194, t, 640, 640, color);
 
     // Crippled Left Arm
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_CRIPPLED_LEFT_ARM) {
         color = (conditions & DAM_CRIP_ARM_LEFT) ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2723,7 +2723,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 194, t, 640, 640, color);
 
     // Crippled Right Leg
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_CRIPPLED_RIGHT_LEG) {
         color = (conditions & DAM_CRIP_LEG_RIGHT) ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2736,7 +2736,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 194, t, 640, 640, color);
 
     // Crippled Left Leg
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_CRIPPLED_LEFT_LEG) {
         color = (conditions & DAM_CRIP_LEG_LEFT) ? COLOR_LIGHT_YELLOW : COLOR_GRASS_GREEN;
@@ -2767,7 +2767,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Action Points
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_ACTION_POINTS) {
         color = COLOR_LIGHT_YELLOW;
@@ -2783,7 +2783,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Carry Weight
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_CARRY_WEIGHT) {
         color = COLOR_LIGHT_YELLOW;
@@ -2799,7 +2799,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, critterIsEncumbered(gDude) ? COLOR_RED : color);
 
     // Melee Damage
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_MELEE_DAMAGE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2821,7 +2821,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Damage Resistance
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_DAMAGE_RESISTANCE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2837,7 +2837,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Poison Resistance
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_POISON_RESISTANCE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2853,7 +2853,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Radiation Resistance
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_RADIATION_RESISTANCE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2869,7 +2869,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Sequence
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_SEQUENCE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2885,7 +2885,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Healing Rate
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_HEALING_RATE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2901,7 +2901,7 @@ static void characterEditorDrawDerivedStats()
     fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 288, t, 640, 640, color);
 
     // Critical Chance
-    y += fontGetLineHeight() + 3;
+    y += 13;
 
     if (characterEditorSelectedItem == EDITOR_FIRST_DERIVED_STAT + EDITOR_DERIVED_STAT_CRITICAL_CHANCE) {
         color = COLOR_LIGHT_YELLOW;
@@ -2970,6 +2970,10 @@ static void characterEditorDrawSkills(int a1)
 
     fontSetCurrent(101);
 
+    // Fixed row height matching the original layout. The FreeType font line height
+    // (based on the TTF metrics) is taller and would break the skills layout.
+    const int skillRowHeight = 11;
+
     y = 27;
     for (Skill skill = SKILL_FIRST; skill < SKILL_COUNT; skill++) {
         if (skill == selectedSkill) {
@@ -2994,11 +2998,11 @@ static void characterEditorDrawSkills(int a1)
 
         fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 573, valueString, 640, 640, color);
 
-        y += fontGetLineHeight() + 1;
+        y += skillRowHeight;
     }
 
     if (!gCharacterEditorIsCreationMode) {
-        y = gCharacterEditorCurrentSkill * (fontGetLineHeight() + 1);
+        y = gCharacterEditorCurrentSkill * skillRowHeight;
         gCharacterEditorSkillValueAdjustmentSliderY = y + 27;
 
         blitBufferToBufferTrans(

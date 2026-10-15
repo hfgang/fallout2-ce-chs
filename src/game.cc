@@ -23,6 +23,7 @@
 #include "draw.h"
 #include "endgame.h"
 #include "font_manager.h"
+#include "freetype_manager.h"
 #include "game.h"
 #include "game_dialog.h"
 #include "game_memory.h"
@@ -217,8 +218,16 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int fl
         showSplash();
     }
 
-    interfaceFontsInit();
-    fontManagerAdd(&gModernFontManager);
+    // Prefer FreeType fonts when available. They support multi-byte encodings
+    // (e.g. GBK) which makes it possible to render Chinese text. When they are
+    // not available (no "fonts/<language>/font.ini" in the game directory) fall
+    // back to the original interface fonts.
+    if (FtFontsInit() == 0) {
+        fontManagerAdd(&gFtFontManager);
+    } else {
+        interfaceFontsInit();
+        fontManagerAdd(&gModernFontManager);
+    }
     fontSetCurrent(font);
 
     screenshotHandlerConfigure(KEY_F12, gameTakeScreenshot);
@@ -527,6 +536,7 @@ void gameExit()
     wmWorldMap_exit();
     partyMembersExit();
     endgameDeathEndingExit();
+    FtFontsExit();
     interfaceFontsExit();
     windowClose();
     messageListRepositoryExit();

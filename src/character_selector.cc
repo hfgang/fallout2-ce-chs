@@ -633,7 +633,9 @@ static bool characterSelectorWindowRenderStats()
 
     fontGetCharacterWidth(0x20);
 
-    int vh = fontGetLineHeight();
+    // Fixed line height matching the original layout. The FreeType font line
+    // height (based on the TTF metrics) is taller and would break the layout.
+    int vh = 11;
     int y = 40;
 
     // NAME

@@ -84,6 +84,12 @@ void messageListRepositorySetProtoMessageList(int messageListId, MessageList* me
 int messageListRepositoryAddExtra(const char* path);
 char* messageListRepositoryGetMsg(int messageListId, int messageId);
 
+// Enables multi-byte (e.g. GBK) aware parsing of message files. When enabled,
+// lead bytes (0x81-0xFE) consume their trail byte without checking it for the
+// '}' delimiter. Must be called before message lists are loaded. Used by the
+// FreeType font manager to support Chinese text.
+void messageListSetMultiByte(bool enabled);
+
 } // namespace fallout
 
 #endif /* MESSAGE_H */

@@ -9,7 +9,13 @@
 namespace fallout {
 
 // 0x4BC6F0 word_wrap
-int wordWrap(const char* string, int width, short* breakpoints, short* breakpointsLengthPtr)
+//
+// NOTE: This is the legacy (single-byte, English-oriented) implementation. It
+// is exposed as [leagcyWordWrap] and wired into font managers that do not
+// provide their own wrapping. Callers should use the [wordWrap] function
+// pointer (see text_font.h) which resolves to the current font manager's
+// implementation.
+int leagcyWordWrap(const char* string, int width, short* breakpoints, short* breakpointsLengthPtr)
 {
     breakpoints[0] = 0;
     *breakpointsLengthPtr = 1;

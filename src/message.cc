@@ -34,6 +34,10 @@ static constexpr int kLastPersistentMessageListId = 0x2FFF;
 static constexpr int kFirstTemporaryMessageListId = 0x3000;
 static constexpr int kLastTemporaryMessageListId = 0x3FFF;
 
+// True when the game text uses a multi-byte encoding (e.g. GBK for Chinese).
+// Enabled via messageListSetMultiByte once FreeType fonts are initialized.
+static bool gMessageListMultiByte = false;
+
 struct MessageListRepositoryState {
     std::array<MessageList*, STANDARD_MESSAGE_LIST_COUNT> standardMessageLists;
     std::array<MessageList*, PROTO_MESSAGE_LIST_COUNT> protoMessageLists;
@@ -525,6 +529,28 @@ static int _message_load_field(File* file, char* str)
                 debugPrint("\nError reading message file - text exceeds limit.\n");
                 return 4;
             }
+
+            // Handle multi-byte character encodings (e.g. GBK for Chinese). If
+            // the current byte is a lead byte (0x81-0xFE) the following trail
+            // byte must be consumed without checking it for the '}' delimiter,
+            // otherwise valid trail bytes would terminate the message early.
+            // This is only enabled for multi-byte encodings (see
+            // messageListSetMultiByte) so that single-byte text with extended
+            // ascii characters is unaffected.
+            if (gMessageListMultiByte && (unsigned char)ch >= 0x81 && (unsigned char)ch <= 0xFE) {
+                int nextCh = fileReadChar(file);
+                if (nextCh == -1) {
+                    debugPrint("\nError reading message file - EOF reached in multi-byte character.\n");
+                    return 3;
+                }
+                *(str + len) = nextCh;
+                len++;
+
+                if (len >= MESSAGE_LIST_ITEM_FIELD_MAX_SIZE) {
+                    debugPrint("\nError reading message file - text exceeds limit.\n");
+                    return 4;
+                }
+            }
         }
     }
 
@@ -789,6 +815,11 @@ char* messageListRepositoryGetMsg(int messageListId, int messageId)
 
     MessageListItem messageListItem;
     return getmsg(messageList, &messageListItem, messageId);
+}
+
+void messageListSetMultiByte(bool enabled)
+{
+    gMessageListMultiByte = enabled;
 }
 
 static MessageList* messageListRepositoryLoad(const char* path)

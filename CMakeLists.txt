@@ -115,6 +115,8 @@ set(FALLOUT_ENGINE_SOURCES
     "src/file_utils.h"
     "src/font_manager.cc"
     "src/font_manager.h"
+    "src/freetype_manager.cc"
+    "src/freetype_manager.h"
     "src/game_config.cc"
     "src/game_config.h"
     "src/game_config_migration.cc"
@@ -532,6 +534,17 @@ target_link_libraries(${EXECUTABLE_NAME} ${SDL2_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${SDL2_MAIN_LIBRARIES})
 target_include_directories(${EXECUTABLE_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 
+# FreeType-based fonts with multi-byte (e.g. GBK) encoding support. Optional at
+# runtime: when no "fonts/<language>/font.ini" is found in the game directory
+# the engine falls back to the original interface fonts.
+add_subdirectory("third_party/freetype")
+target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS})
+
+add_subdirectory("third_party/iconv")
+target_link_libraries(${EXECUTABLE_NAME} ${ICONV_LIBRARIES})
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${ICONV_INCLUDE_DIRS})
+
 if((NOT ANDROID) AND (NOT IOS) AND (NOT CMAKE_SYSTEM_NAME MATCHES "Emscripten"))
     add_executable(ce-dat-tool
         "tools/dat_tool.cc"
@@ -699,6 +712,8 @@ if((NOT ANDROID) AND (NOT IOS) AND (NOT CMAKE_SYSTEM_NAME MATCHES "Emscripten"))
     target_include_directories(mapper-ce PRIVATE "src")
     target_include_directories(mapper-ce PRIVATE ${ZLIB_INCLUDE_DIRS})
     target_include_directories(mapper-ce PRIVATE ${SDL2_INCLUDE_DIRS})
+    target_include_directories(mapper-ce PRIVATE ${FREETYPE_INCLUDE_DIRS})
+    target_include_directories(mapper-ce PRIVATE ${ICONV_INCLUDE_DIRS})
 
     target_link_libraries(mapper-ce
         fpattern::fpattern
@@ -706,6 +721,8 @@ if((NOT ANDROID) AND (NOT IOS) AND (NOT CMAKE_SYSTEM_NAME MATCHES "Emscripten"))
         ${ZLIB_LIBRARIES}
         ${SDL2_LIBRARIES}
         ${SDL2_MAIN_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${ICONV_LIBRARIES}
     )
 endif()
 
