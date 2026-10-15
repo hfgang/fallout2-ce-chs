@@ -137,17 +137,21 @@ the original bitmap fonts.
 iOS 上 app 本身只是**引擎**，游戏数据和字体都放在 app 的 **Documents** 目录
 （已开启文件共享，可用文件 App / Finder 直接读写）。
 
-1. 安装本 fork 的 ipa（未签名，用 AltStore / Sideloadly 等工具签名后安装）。
+1. 下载 ipa：进入仓库的 **Actions** 页 → 点最新的 **Build** 这一次运行 → 在页面
+   底部的 **Artifacts** 里下载 `fallout2-ce-ios`（zip 里有 ipa 和 `ce.dat`）。
+   未签名，用 AltStore / Sideloadly / 爱思等工具用自己的 Apple ID 签名后安装。
 2. 用 **Finder**（Mac 连手机）或 iPhone 上的**文件 App** 打开「Fallout 2」的
    文档目录（Documents）。
 3. 拷进去这些文件：
-   - `master.dat`、`critter.dat` — 正版游戏数据
-   - `ce.dat` — 社区版资源（从 release 下载）
-   - `fonts` — 本仓库的目录，**整个目录拷进去**
-   - `fallout2.cfg` — 配置文件，里面写 `language=chs`
+   - `master.dat`、`critter.dat` — 正版游戏数据（中文版/打了汉化补丁的）
+   - `ce.dat` — 社区版资源（就在上面那个 zip 里）
+   - `fonts` — 本仓库的目录，**整个目录拷进去**，里面有 Noto Sans SC
+   - `fallout2.cfg`（可选）— 想显式指定就写 `language=chs`；不拷这个文件也行，
+     默认 `english` 会自动落到中文配置
 4. 启动 app。
 
 **之后改字体、换汉化包、调配置，直接改 Documents 里的文件就行，不用重装 ipa。**
+只有引擎本身升级才需要重新装一次 ipa。
 只有引擎本身升级（比如同步上游新功能）才需要重新装一次 ipa。
 
 ### 其他语言 / other languages
