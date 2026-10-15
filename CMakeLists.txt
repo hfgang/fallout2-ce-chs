@@ -5,7 +5,11 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(EXECUTABLE_NAME fallout2-ce)
 
 if(APPLE)
-    if(IOS)
+    # `IOS` is only set by CMake while processing project() below, so checking it
+    # here would always be false and iOS builds would pick up the macOS settings.
+    # `CMAKE_SYSTEM_NAME` is already available at this point (the ios preset sets
+    # it to iOS), so use that instead.
+    if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
         set(CMAKE_OSX_DEPLOYMENT_TARGET "12" CACHE STRING "")
         set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "")
     else()
