@@ -437,6 +437,11 @@ if(APPLE)
             XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon"
             XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.alexbatalov.fallout2-ce"
             XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
+            # Build without a signing identity: the unsigned .app is repacked
+            # into an .ipa and re-signed by the user's sideloading tool of
+            # choice (AltStore, Sideloadly, etc.).
+            XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED "NO"
+            XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
         )
 
         set(MACOSX_BUNDLE_BUNDLE_NAME "${EXECUTABLE_NAME}")

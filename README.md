@@ -100,24 +100,62 @@ In time this stuff will receive an in-game interface, right now you have to do i
 
 Note: There are a few settings that are still configured in `ddraw.ini`.  They will be migrated to cfg over time.
 
-## Chinese language support
+## 中文支持 / Chinese language support
 
-This fork adds support for Chinese (and other multi-byte encoded) game text on
-top of upstream. Interface text is rendered with TrueType fonts through a
-vendored FreeType + GNU libiconv, so GBK-encoded messages (from a Chinese
-translation patch) display correctly, including CJK-aware line wrapping in
-dialog and inventory screens. Everything is optional at runtime:
+上游（官方）版本用位图字体渲染界面文字，**无法显示 GBK 中文**。本 fork 通过内建的
+FreeType + GNU libiconv 用 TrueType 字体渲染文字，中文可以正常显示（对话、物品
+描述等界面会按中文字边界换行，而不是按空格）。
 
-1. Copy the `fonts` directory from this repository into your game directory
-   (next to `master.dat`). It ships a Chinese configuration
-   (`fonts/chs/font.ini`) with **Noto Sans SC** bundled (SIL OFL 1.1, see
-   `fonts/chs/NotoSansSC-LICENSE.txt`), covering both Latin and CJK glyphs.
-2. Set `language=chs` in `fallout2.cfg` (the value used by the Chinese Fallout
-   2 community; `chinese`/`zh` work too, and `english` also picks up the
-   bundled Chinese configuration because translated messages usually live
-   inside `master.dat`).
-3. Run the game. Without the `fonts` directory the engine behaves exactly like
-   upstream and uses the original bitmap fonts.
+Upstream renders all interface text with bitmap fonts and cannot display
+multi-byte encoded text. This fork adds a TrueType font renderer (vendored
+FreeType + GNU libiconv), so GBK-encoded Chinese messages display correctly,
+including CJK-aware line wrapping in dialog and inventory screens.
+
+### 三步开启中文（Windows / macOS / Linux）
+
+1. **把本仓库的 `fonts` 目录整个拷到游戏目录**（`master.dat` 所在的那个目录）。
+   `fonts/chs/` 里已经带了中文配置 `font.ini` 和字体 **Noto Sans SC**（SIL OFL 1.1
+   许可，中英文字符都有，开箱即用，不用另外找字体）。
+2. **在游戏目录的 `fallout2.cfg` 里设置**：
+   ```ini
+   [system]
+   language=chs
+   ```
+   `chs` 是中文社区的标准写法；`chinese`、`zh` 也可以。如果你的汉化包保持
+   `language=english`（汉化文本通常直接替换在 `master.dat` 里），**不用改**——
+   引擎会自动落到中文配置。
+3. **启动游戏**。
+
+不带 `fonts` 目录时，行为和官方版**完全一致**（用原始位图字体），所以这功能
+可以放心地开着，不影响英文或其他语言版本。
+
+Without the `fonts` directory the engine behaves exactly like upstream and uses
+the original bitmap fonts.
+
+### iOS / iPadOS 具体步骤
+
+iOS 上 app 本身只是**引擎**，游戏数据和字体都放在 app 的 **Documents** 目录
+（已开启文件共享，可用文件 App / Finder 直接读写）。
+
+1. 安装本 fork 的 ipa（未签名，用 AltStore / Sideloadly 等工具签名后安装）。
+2. 用 **Finder**（Mac 连手机）或 iPhone 上的**文件 App** 打开「Fallout 2」的
+   文档目录（Documents）。
+3. 拷进去这些文件：
+   - `master.dat`、`critter.dat` — 正版游戏数据
+   - `ce.dat` — 社区版资源（从 release 下载）
+   - `fonts` — 本仓库的目录，**整个目录拷进去**
+   - `fallout2.cfg` — 配置文件，里面写 `language=chs`
+4. 启动 app。
+
+**之后改字体、换汉化包、调配置，直接改 Documents 里的文件就行，不用重装 ipa。**
+只有引擎本身升级（比如同步上游新功能）才需要重新装一次 ipa。
+
+### 其他语言 / other languages
+
+其他语言不受影响：内置中文配置只在语言值为英文或中文类时生效；任何语言都可以
+提供自己的 `fonts/<language>/font.ini`（例如繁体配 `encoding=BIG5`）。详见
+[fonts/README.md](fonts/README.md)：配置键说明、怎么换成自己喜欢的字体、目录
+查找顺序。
 
 Other languages are unaffected: the bundled configuration is only used for
 English or Chinese language values, and any language can provide its own
