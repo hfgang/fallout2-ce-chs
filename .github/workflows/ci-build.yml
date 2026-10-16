@@ -172,6 +172,12 @@ jobs:
       - name: Copy bundled fonts
         run: |
           cmake --build --preset ios-release --target copy-bundled-fonts
+          # Make sure the fonts really land in the bundle that gets packaged.
+          for APP in $(find out/build/ios -type d -name "*.app"); do
+            echo "bundle: $APP"
+            cp -R fonts "$APP/fonts"
+            find "$APP/fonts" -type f
+          done
 
       - name: Pack
         run: |
@@ -366,6 +372,11 @@ jobs:
       - name: Copy bundled fonts
         run: |
           cmake --build --preset macos-debug --target copy-bundled-fonts
+          for APP in $(find out/build/macos -type d -name "*.app"); do
+            echo "bundle: $APP"
+            cp -R fonts "$APP/Contents/Resources/fonts"
+            find "$APP/Contents/Resources/fonts" -type f
+          done
 
       - name: Pack
         run: |
