@@ -169,6 +169,10 @@ jobs:
         run: |
           cmake --build --preset ios-release
 
+      - name: Copy bundled fonts
+        run: |
+          cmake --build --preset ios-release --target copy-bundled-fonts
+
       - name: Pack
         run: |
           cd out/build/ios
@@ -358,6 +362,10 @@ jobs:
       - name: Build
         run: |
           cmake --build --preset macos-debug
+
+      - name: Copy bundled fonts
+        run: |
+          cmake --build --preset macos-debug --target copy-bundled-fonts
 
       - name: Pack
         run: |
