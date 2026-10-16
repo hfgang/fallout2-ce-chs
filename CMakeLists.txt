@@ -490,13 +490,25 @@ if(APPLE)
         set(BUNDLED_FONTS_DIR "$<TARGET_BUNDLE_CONTENT_DIR:${EXECUTABLE_NAME}>/Resources/fonts")
     endif()
 
-    add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
+    # Driven by a stamp file (not a POST_BUILD command on the executable) so
+    # the copy also happens on cached/incremental builds where the executable
+    # itself is up to date and nothing gets relinked.
+    file(GLOB_RECURSE BUNDLED_FONT_FILES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/fonts/*")
+    set(BUNDLED_FONTS_STAMP "${CMAKE_CURRENT_BINARY_DIR}/bundled_fonts.stamp")
+
+    add_custom_command(
+        OUTPUT "${BUNDLED_FONTS_STAMP}"
         COMMAND "${CMAKE_COMMAND}" -E copy_directory
             "${CMAKE_SOURCE_DIR}/fonts"
             "${BUNDLED_FONTS_DIR}"
+        COMMAND "${CMAKE_COMMAND}" -E touch "${BUNDLED_FONTS_STAMP}"
+        DEPENDS ${BUNDLED_FONT_FILES}
         COMMENT "Copying bundled fonts into ${BUNDLED_FONTS_DIR}"
         VERBATIM
     )
+
+    add_custom_target(copy-bundled-fonts ALL DEPENDS "${BUNDLED_FONTS_STAMP}")
+    add_dependencies(copy-bundled-fonts ${EXECUTABLE_NAME})
 endif()
 
 if((NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten"))
