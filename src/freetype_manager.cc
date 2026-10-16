@@ -5,6 +5,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#endif
+
+#if defined(__APPLE__) && TARGET_OS_IOS
+#include "platform/ios/paths.h"
+#endif
+
 #include <map>
 #include <string>
 #include <vector>
@@ -360,7 +368,9 @@ static bool FtFontsIsChineseLanguage(const char* language)
         || FtFontsContains(language, "zh") != NULL;
 }
 
-static bool FtFontsResolveDir()
+// Looks for "font.ini" under [root], which is either empty (the game
+// directory) or an absolute directory ending with a path separator.
+static bool FtFontsResolveDirFromRoot(const char* root, std::string* resolvedDir)
 {
     const char* language = settings.system.language.c_str();
 
@@ -368,9 +378,11 @@ static bool FtFontsResolveDir()
 
     // 1. Explicit per-language configuration, e.g. "fonts/chs/font.ini" for
     //    language=chs. Any language can provide its own directory this way.
-    snprintf(path, sizeof(path), "fonts/%s/font.ini", language);
-    if (fileOpen(path, "rb") != NULL) {
-        gFtFontsDir = "fonts/" + std::string(language);
+    snprintf(path, sizeof(path), "%sfonts/%s/font.ini", root, language);
+    File* stream = fileOpen(path, "rb");
+    if (stream != NULL) {
+        fileClose(stream);
+        *resolvedDir = std::string(root) + "fonts/" + language;
         return true;
     }
 
@@ -381,9 +393,41 @@ static bool FtFontsResolveDir()
     //    Other languages keep the original bitmap fonts instead: their
     //    encodings (e.g. CP1251) are not GBK-compatible.
     if (compat_stricmp(language, ENGLISH) == 0 || FtFontsIsChineseLanguage(language)) {
-        snprintf(path, sizeof(path), "fonts/chs/font.ini");
-        if (fileOpen(path, "rb") != NULL) {
-            gFtFontsDir = "fonts/chs";
+        snprintf(path, sizeof(path), "%sfonts/chs/font.ini", root);
+        stream = fileOpen(path, "rb");
+        if (stream != NULL) {
+            fileClose(stream);
+            *resolvedDir = std::string(root) + "fonts/chs";
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Directory inside the app bundle holding the fonts shipped with the build
+// (iOS only). Returns null when there is no bundle to look into.
+static const char* FtFontsBundledRoot()
+{
+#if defined(__APPLE__) && TARGET_OS_IOS
+    return iOSGetResourcesPath();
+#else
+    return NULL;
+#endif
+}
+
+// Fonts next to the game data always win, so players can drop their own
+// "fonts" directory in to override the bundled one.
+static bool FtFontsResolveDir()
+{
+    if (FtFontsResolveDirFromRoot("", &gFtFontsDir)) {
+        return true;
+    }
+
+    const char* bundledRoot = FtFontsBundledRoot();
+    if (bundledRoot != NULL && bundledRoot[0] != '\0') {
+        if (FtFontsResolveDirFromRoot(bundledRoot, &gFtFontsDir)) {
+            debugPrint("FtFontsInit: using fonts bundled with the app\n");
             return true;
         }
     }

@@ -475,6 +475,28 @@ if(APPLE)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.alexbatalov.fallout2-ce")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "1.3.0")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "1.3.0")
+
+    # Ship the FreeType fonts (fonts/chs, Noto Sans SC, SIL OFL 1.1) inside the
+    # app bundle so Chinese text works without any manual setup. A "fonts"
+    # directory next to the game data still takes precedence, so players can
+    # drop in their own fonts to override the bundled ones.
+    if(IOS)
+        # iOS bundles keep resources at the bundle root, which is also what
+        # NSBundle's resourcePath (iOSGetResourcesPath) returns.
+        set(BUNDLED_FONTS_DIR "$<TARGET_BUNDLE_CONTENT_DIR:${EXECUTABLE_NAME}>/fonts")
+    else()
+        # macOS runs with the working directory set to the bundle's Resources
+        # directory (SDL_GetBasePath), so plain "fonts/..." lookups land here.
+        set(BUNDLED_FONTS_DIR "$<TARGET_BUNDLE_CONTENT_DIR:${EXECUTABLE_NAME}>/Resources/fonts")
+    endif()
+
+    add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory
+            "${CMAKE_SOURCE_DIR}/fonts"
+            "${BUNDLED_FONTS_DIR}"
+        COMMENT "Copying bundled fonts into ${BUNDLED_FONTS_DIR}"
+        VERBATIM
+    )
 endif()
 
 if((NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten"))

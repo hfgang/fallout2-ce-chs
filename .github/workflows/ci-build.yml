@@ -128,6 +128,7 @@ jobs:
           cp os/android/app/build/outputs/apk/debug/app-debug.apk out/dist/fallout2-ce-android-debug/fallout2-ce.apk
           cp out/dist/ce.dat out/dist/fallout2-ce-android-debug/ce.dat
           cp files/fallout2.cfg out/dist/fallout2-ce-android-debug/EXAMPLE_fallout2.cfg
+          cp -r fonts out/dist/fallout2-ce-android-debug/fonts
           cd out/dist
           zip -r fallout2-ce-android-debug.zip fallout2-ce-android-debug
 
@@ -185,6 +186,9 @@ jobs:
           cp out/build/ios/fallout2-ce.ipa out/dist/fallout2-ce-ios/fallout2-ce-ios.ipa
           cp out/dist/ce.dat out/dist/fallout2-ce-ios/ce.dat
           cp files/fallout2.cfg out/dist/fallout2-ce-ios/EXAMPLE_fallout2.cfg
+          sed -i.bak 's/^language=.*/language=chs/' out/dist/fallout2-ce-ios/EXAMPLE_fallout2.cfg
+          rm -f out/dist/fallout2-ce-ios/EXAMPLE_fallout2.cfg.bak
+          cp -r fonts out/dist/fallout2-ce-ios/fonts
           cd out/dist
           zip -r fallout2-ce-ios.zip fallout2-ce-ios
 
@@ -251,6 +255,7 @@ jobs:
           cp out/build/linux-${{ matrix.arch }}-debug/fallout2-ce out/dist/fallout2-ce-linux-${{ matrix.arch }}/fallout2-ce
           cp out/dist/ce.dat out/dist/fallout2-ce-linux-${{ matrix.arch }}/ce.dat
           cp files/fallout2.cfg out/dist/fallout2-ce-linux-${{ matrix.arch }}/EXAMPLE_fallout2.cfg
+          cp -r fonts out/dist/fallout2-ce-linux-${{ matrix.arch }}/fonts
           tar -czvf out/dist/fallout2-ce-linux-${{ matrix.arch }}.tar.gz -C out/dist fallout2-ce-linux-${{ matrix.arch }}
 
       - name: Upload
@@ -321,6 +326,7 @@ jobs:
           cp build/fallout2-ce out/dist/fallout2-ce-linux-${{ matrix.arch }}/fallout2-ce
           cp out/dist/ce.dat out/dist/fallout2-ce-linux-${{ matrix.arch }}/ce.dat
           cp files/fallout2.cfg out/dist/fallout2-ce-linux-${{ matrix.arch }}/EXAMPLE_fallout2.cfg
+          cp -r fonts out/dist/fallout2-ce-linux-${{ matrix.arch }}/fonts
           tar -czvf out/dist/fallout2-ce-linux-${{ matrix.arch }}.tar.gz -C out/dist fallout2-ce-linux-${{ matrix.arch }}
 
       - name: Upload
@@ -426,6 +432,7 @@ jobs:
           cp out/build/windows-${{ matrix.arch }}/RelWithDebInfo/fallout2-ce.exe out/dist/fallout2-ce-windows-${{ matrix.arch }}/fallout2-ce.exe
           cp out/dist/ce.dat out/dist/fallout2-ce-windows-${{ matrix.arch }}/ce.dat
           cp files/fallout2.cfg out/dist/fallout2-ce-windows-${{ matrix.arch }}/EXAMPLE_fallout2.cfg
+          cp -r fonts out/dist/fallout2-ce-windows-${{ matrix.arch }}/fonts
           cd out/dist
           7z a fallout2-ce-windows-${{ matrix.arch }}.zip fallout2-ce-windows-${{ matrix.arch }}
 
@@ -509,3 +516,28 @@ jobs:
           draft: false
           prerelease: true
           name: Fallout2-CE Continuous Build
+          body: |
+            自动构建：main 分支每次提交都会重新发布这个版本。
+
+            **包里不含游戏数据**。请先购买正版 Fallout 2，自备 `master.dat` / `critter.dat`。
+
+            ## 中文支持
+
+            - iOS 的 ipa 与 macOS 的 dmg **已内置中文字体**（Noto Sans SC），装好即可显示中文，不用手动拷字体。
+            - Windows / Linux 包里附了 `fonts` 目录，整个拷到游戏目录（`master.dat` 同级）即可。
+            - 想显式指定语言时，在 `fallout2.cfg` 的 `[system]` 段写 `language=chs`；保持 `english` 也会自动落到中文配置。
+
+            ## 各平台包
+
+            | 文件 | 平台 | 说明 |
+            | --- | --- | --- |
+            | `fallout2-ce-ios.zip` | iOS / iPadOS | 内含 ipa、`ce.dat`、示例 `fallout2.cfg`。ipa 未签名，用 AltStore / Sideloadly / 爱思等用自己的 Apple ID 签名后安装 |
+            | `Fallout.II.Community.Edition.dmg` | macOS | 已内置字体，把游戏数据放进游戏目录即可 |
+            | `fallout2-ce-windows-x64.zip`、`-x86.zip` | Windows | 解压到 `Fallout2` 目录，运行 `fallout2-ce.exe` |
+            | `fallout2-ce-linux-x64.tar.gz`、`-x86`、`-arm64`、`-armhf` | Linux | 解压到游戏目录，运行 `fallout2-ce` |
+            | `fallout2-ce-android-debug.zip` | Android | 安装后首次启动会让你选游戏目录 |
+
+            ## 许可
+
+            - 引擎：Sustainable Use License（见仓库 `LICENSE.md`），仅允许免费、非商业分发。
+            - 字体：Noto Sans SC，SIL Open Font License 1.1，许可证副本在包内 `fonts/chs/NotoSansSC-LICENSE.txt`。

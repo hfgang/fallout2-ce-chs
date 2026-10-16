@@ -111,11 +111,15 @@ multi-byte encoded text. This fork adds a TrueType font renderer (vendored
 FreeType + GNU libiconv), so GBK-encoded Chinese messages display correctly,
 including CJK-aware line wrapping in dialog and inventory screens.
 
-### 三步开启中文（Windows / macOS / Linux）
+### 开启中文（Windows / macOS / Linux）
 
-1. **把本仓库的 `fonts` 目录整个拷到游戏目录**（`master.dat` 所在的那个目录）。
+**macOS 的 app 和 iOS 的 ipa 已经内置字体**，不用拷 `fonts` 目录；Windows / Linux
+的发布包里附了 `fonts` 目录，拷到游戏目录即可。
+
+1. **把 `fonts` 目录整个拷到游戏目录**（`master.dat` 所在的那个目录）。
    `fonts/chs/` 里已经带了中文配置 `font.ini` 和字体 **Noto Sans SC**（SIL OFL 1.1
-   许可，中英文字符都有，开箱即用，不用另外找字体）。
+   许可，中英文字符都有，开箱即用，不用另外找字体）。用 macOS app 的话这步可以
+   跳过——字体已经打进 app 里了。
 2. **在游戏目录的 `fallout2.cfg` 里设置**：
    ```ini
    [system]
@@ -134,24 +138,26 @@ the original bitmap fonts.
 
 ### iOS / iPadOS 具体步骤
 
-iOS 上 app 本身只是**引擎**，游戏数据和字体都放在 app 的 **Documents** 目录
-（已开启文件共享，可用文件 App / Finder 直接读写）。
+iOS 上 app 本身只是**引擎**，游戏数据放在 app 的 **Documents** 目录（已开启文件
+共享，可用文件 App / Finder 直接读写）。**中文字体已经打进 ipa 里**，不需要手动拷。
 
-1. 下载 ipa：进入仓库的 **Actions** 页 → 点最新的 **Build** 这一次运行 → 在页面
-   底部的 **Artifacts** 里下载 `fallout2-ce-ios`（zip 里有 ipa 和 `ce.dat`）。
+1. 下载 ipa：
+   - 推荐：仓库右侧 **Releases** → `Fallout2-CE Continuous Build` → 下载
+     `fallout2-ce-ios.zip`（main 分支有更新时会自动重新发布，各平台包都在里面）；
+   - 或者：**Actions** → 最新的 **Build** 那次运行 → 页面底部 **Artifacts** 里的
+     `fallout2-ce-ios`（zip 里有 ipa、`ce.dat`、示例 `fallout2.cfg`）。
    未签名，用 AltStore / Sideloadly / 爱思等工具用自己的 Apple ID 签名后安装。
 2. 用 **Finder**（Mac 连手机）或 iPhone 上的**文件 App** 打开「Fallout 2」的
    文档目录（Documents）。
 3. 拷进去这些文件：
    - `master.dat`、`critter.dat` — 正版游戏数据（中文版/打了汉化补丁的）
    - `ce.dat` — 社区版资源（就在上面那个 zip 里）
-   - `fonts` — 本仓库的目录，**整个目录拷进去**，里面有 Noto Sans SC
    - `fallout2.cfg`（可选）— 想显式指定就写 `language=chs`；不拷这个文件也行，
-     默认 `english` 会自动落到中文配置
+     默认 `english` 会自动落到 app 内置的中文配置
+   - `fonts`（可选）— 只有想换字体时才拷；拷进去的会覆盖 app 内置的那套
 4. 启动 app。
 
-**之后改字体、换汉化包、调配置，直接改 Documents 里的文件就行，不用重装 ipa。**
-只有引擎本身升级才需要重新装一次 ipa。
+**之后换汉化包、调配置、换字体，直接改 Documents 里的文件就行，不用重装 ipa。**
 只有引擎本身升级（比如同步上游新功能）才需要重新装一次 ipa。
 
 ### 其他语言 / other languages

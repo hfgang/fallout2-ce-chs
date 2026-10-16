@@ -4,6 +4,10 @@
 （与 `master.dat` 同级）后，引擎会优先使用 FreeType 渲染界面文字；
 目录不存在或缺少可用字体时，自动回退到原始位图字体，不影响英文游戏。
 
+**macOS 的 app 与 iOS 的 ipa 已经内置本目录的内容**，开箱即有中文，不用手动复制。
+（iOS 上字体在 app 包内，游戏数据在 Documents；想换字体再把 `fonts` 拷进
+Documents，包外那份优先。）
+
 `fonts/chs/` 已内置 **Noto Sans SC**（SIL OFL 1.1 许可，见
 `NotoSansSC-LICENSE.txt`），同时覆盖拉丁字母与 CJK 字形，**开箱即用**，
 无需另外准备字体。
