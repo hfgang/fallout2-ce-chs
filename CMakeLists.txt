@@ -772,12 +772,25 @@ if(APPLE)
     if(IOS)
         install(TARGETS ${EXECUTABLE_NAME} DESTINATION "Payload")
 
+        # The fonts are installed straight into the packaged bundle: copying
+        # them into the build tree does not work because Xcode's bundle path
+        # contains $(EFFECTIVE_PLATFORM_NAME), which CMake does not expand.
+        install(DIRECTORY "${CMAKE_SOURCE_DIR}/fonts"
+            DESTINATION "Payload/${EXECUTABLE_NAME}.app"
+        )
+
         set(CPACK_GENERATOR "ZIP")
         set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
         set(CPACK_PACKAGE_FILE_NAME "fallout2-ce")
         set(CPACK_ARCHIVE_FILE_EXTENSION "ipa")
     else()
         install(TARGETS ${EXECUTABLE_NAME} DESTINATION .)
+
+        # Same as above: installed into the packaged .app (OUTPUT_NAME) rather
+        # than copied into the build tree.
+        install(DIRECTORY "${CMAKE_SOURCE_DIR}/fonts"
+            DESTINATION "Fallout II Community Edition.app/Contents/Resources"
+        )
 
         set(CPACK_GENERATOR "DragNDrop")
         set(CPACK_DMG_DISABLE_APPLICATIONS_SYMLINK ON)

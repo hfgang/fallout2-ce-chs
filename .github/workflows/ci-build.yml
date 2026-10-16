@@ -169,20 +169,15 @@ jobs:
         run: |
           cmake --build --preset ios-release
 
-      - name: Copy bundled fonts
-        run: |
-          cmake --build --preset ios-release --target copy-bundled-fonts
-          # Make sure the fonts really land in the bundle that gets packaged.
-          for APP in $(find out/build/ios -type d -name "*.app"); do
-            echo "bundle: $APP"
-            cp -R fonts "$APP/fonts"
-            find "$APP/fonts" -type f
-          done
-
       - name: Pack
         run: |
           cd out/build/ios
           cpack -C RelWithDebInfo
+
+      - name: Verify bundled fonts
+        run: |
+          unzip -l out/build/ios/fallout2-ce.ipa | grep -E "fonts/chs/(font.ini|NotoSansSC.ttf)" \
+            || { echo "::error::bundled fonts are missing from the ipa"; exit 1; }
 
       - name: Download ce.dat
         uses: actions/download-artifact@v4
@@ -369,19 +364,17 @@ jobs:
         run: |
           cmake --build --preset macos-debug
 
-      - name: Copy bundled fonts
-        run: |
-          cmake --build --preset macos-debug --target copy-bundled-fonts
-          for APP in $(find out/build/macos -type d -name "*.app"); do
-            echo "bundle: $APP"
-            cp -R fonts "$APP/Contents/Resources/fonts"
-            find "$APP/Contents/Resources/fonts" -type f
-          done
-
       - name: Pack
         run: |
           cd out/build/macos
           cpack -C Debug
+
+      - name: Verify bundled fonts
+        run: |
+          find out/build/macos/_CPack_Packages -name "NotoSansSC.ttf" | head -3 \
+            || true
+          find out/build/macos/_CPack_Packages -name "NotoSansSC.ttf" | grep -q . \
+            || { echo "::error::bundled fonts are missing from the dmg"; exit 1; }
 
       - name: Upload
         uses: actions/upload-artifact@v4
